@@ -4,24 +4,14 @@ services:
   php:
     build:
       context: ./api
-#      target: api_platform_php
     image: api_platform_php:latest
     depends_on:
       - db
     volumes:
       - ./api:/srv/api:rw,cached
       - ./api/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
-      # if you develop on Linux, you may use a bind-mounted host directory instead
-      # - ./api/var:/srv/api/var:rw
-    networks:
-      testing_net:
-        ipv4_address: 172.28.1.3
 
   api:
-#    build:
-#      context: ./api
-#      target: api_platform_nginx
-#      <<: *api-cache-from
     image: api_platform_nginx:latest
     depends_on:
       - php
@@ -29,24 +19,6 @@ services:
       - ./api/public:/srv/api/public:rw
     ports:
       - 8080:80
-    networks:
-      testing_net:
-        ipv4_address: 172.28.1.2
-
-#  db:
-#    image: postgres:12-alpine
-#    environment:
-#      - POSTGRES_DB=api
-#      - POSTGRES_PASSWORD=!ChangeMe!
-#      - POSTGRES_USER=api-platform
-#    volumes:
-#      - db-data:/var/lib/postgresql/data:rw
-#      # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-#      # - ./api/docker/db/data:/var/lib/postgresql/data:rw
-#    ports:
-#      - target: 5432
-#        published: 5432
-#        protocol: tcp
 
   db:
     image: mysql:5.7.29
@@ -59,9 +31,6 @@ services:
       - db-data-mysql:/var/lib/mysql
     ports:
       - 3306:3306
-    networks:
-      testing_net:
-        ipv4_address: 172.28.1.1
 
 #  admin:
 #    build:
@@ -89,13 +58,6 @@ services:
 #      - target: 80
 #        published: 80
 #        protocol: tcp
-
-networks:
-  testing_net:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.28.0.0/16
 
 volumes:
   db-data: {}
