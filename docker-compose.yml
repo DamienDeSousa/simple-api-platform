@@ -4,7 +4,7 @@ services:
   php:
     build:
       context: ./api
-    image: api_platform_php:latest
+      dockerfile: Dockerfile
     depends_on:
       - db
     volumes:
@@ -12,7 +12,9 @@ services:
       - ./api/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
 
   api:
-    image: api_platform_nginx:latest
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     depends_on:
       - php
     volumes:
